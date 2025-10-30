@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>rpn_manual.nim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="nimib 0.3.13" name="generator">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+  <style>
+.nb-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nb-small {
+  font-size: 0.8rem;
+}
+button.nb-small {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+pre > code {
+  font-size: 1.2em;
+}
+.nb-output {
+  line-height: 1.15;
+}
+figure {
+  margin: 2rem 0;
+}
+figcaption {
+  text-align: center;
+}
+  
+</style>
+  
+</head>
+<body>
+<header>
+<div class="nb-box">
+  <span><a href=".">🏡</a></span>
+  <span><code>rpn_manual.nim</code></span>
+  <span></span>
+</div>
+<hr>
+</header><main>
+<style>
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.content-wrapper {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.code-block {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border-left: 6px solid var(--secondary-color);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.warning {
+  background: #fff3cd;
+  border: 1px solid #f39c12;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 6px solid #f39c12;
+}
+
+.success {
+  background: #d1f2eb;
+  border: 1px solid #27ae60;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 6px solid #27ae60;
+}
+
+.error {
+  background: #fadbd8;
+  border: 1px solid #e74c3c;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 6px solid #e74c3c;
+}
+
+.operation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.operation-table th, .operation-table td {
+  border: 1px solid #ddd;
+  padding: 15px;
+  text-align: left;
+}
+
+.operation-table th {
+  background: var(--primary-color);
+  color: white;
+  font-weight: 600;
+}
+
+.operation-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.operation-table tr:hover {
+  background-color: #e3f2fd;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.4em 0.8em;
+  font-size: 0.75em;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 20px;
+  margin: 0 0.3rem;
+}
+
+.badge-primary { 
+  background: var(--primary-color);
+  color: white; 
+}
+
+.badge-success { 
+  background: var(--success-color);
+  color: white; 
+}
+
+.badge-warning { 
+  background: var(--warning-color);
+  color: white; 
+}
+
+.badge-error { 
+  background: var(--accent-color);
+  color: white; 
+}
+
+.toc {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 6px solid var(--primary-color);
+}
+
+.toc ul {
+  list-style: none;
+  padding: 0;
+}
+
+.toc li {
+  margin: 0.5rem 0;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.toc a {
+  text-decoration: none;
+  color: var(--primary-color);
+  transition: color 0.2s;
+}
+
+.toc a:hover {
+  color: var(--secondary-color);
+}
+
+h1, h2, h3, h4 {
+  color: var(--primary-color);
+  margin-top: 2rem;
+}
+
+h1 {
+  border-bottom: 3px solid var(--secondary-color);
+  padding-bottom: 0.5rem;
+}
+</style>
+<div class="content-wrapper">
+<div class="header">
+  <h1 style="color: white; border: none;">🧮 RPN计算器 - 专业使用手册</h1>
+  <p style="font-size: 1.2em; opacity: 0.9;">基于C++实现的逆波兰表示法计算器</p>
+  <div style="margin-top: 1rem;">
+    <span class="badge badge-primary">版本 2.1</span>
+    <span class="badge badge-success">稳定版</span>
+    <span class="badge badge-warning">C++17</span>
+    <span class="badge badge-error">高性能</span>
+  </div>
+</div>
+<div class="toc">
+<h2>📑 目录</h2>
+<ul>
+<li><a href="#项目简介">项目简介</a></li>
+<li><a href="#快速开始">快速开始</a></li>
+<li><a href="#功能特性">功能特性</a></li>
+<li><a href="#详细使用指南">详细使用指南</a></li>
+<li><a href="#错误处理">错误处理</a></li>
+<li><a href="#高级功能">高级功能</a></li>
+<li><a href="#api参考">API参考</a></li>
+<li><a href="#示例集合">示例集合</a></li>
+</ul>
+</div>
+<h2>🚀 项目简介</h2>
+<p>RPN（逆波兰表示法）是一种数学表达式表示法，其中操作符位于操作数之后。
+这种表示法无需括号即可明确运算顺序，被广泛用于计算器和编程语言中。</p>
+<p><strong>核心优势：</strong></p>
+<ul>
+<li>🎯 <strong>无歧义性</strong> - 无需括号，运算顺序明确</li>
+<li>⚡ <strong>高效计算</strong> - 适合栈机实现，计算效率高</li>
+<li>🔧 <strong>易于扩展</strong> - 模块化设计，支持新操作符</li>
+</ul>
+<h2>⚡ 快速开始</h2>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> compileCommand = <span class="hljs-string">&quot;g++ -std=c++17 -Wall -Wextra -O2 -o rpn_calc rpn_calc.cpp&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;💻 编译命令: {compileCommand}&quot;</span></code></pre><pre class="nb-output">💻 编译命令: g++ -std=c++17 -Wall -Wextra -O2 -o rpn_calc rpn_calc.cpp</pre>
+<div class="success">
+💡 <strong>编译提示:</strong> 
+- 使用 <code>-O2</code> 优化标志可以获得更好的性能
+- 使用 <code>-g</code> 标志包含调试信息
+</div>
+<h2>✨ 功能特性</h2>
+<div class="feature-grid">
+  <div class="feature-card">
+    <h3>🔢 基本运算</h3>
+    <p>支持加、减、乘、除四则运算，处理整数和浮点数</p>
+    <code>5 3 + → 8.0</code>
+  </div>
+  <div class="feature-card">
+    <h3>📊 栈管理</h3>
+    <p>实时栈状态查看、清空操作，支持连续计算</p>
+    <code>命令: s (显示栈), c (清空栈)</code>
+  </div>
+  <div class="feature-card">
+    <h3>🛡️ 错误处理</h3>
+    <p>完善的异常处理：除零、栈空、格式错误</p>
+    <code>10 0 / → 除零错误</code>
+  </div>
+  <div class="feature-card">
+    <h3>🎯 高精度</h3>
+    <p>支持浮点数运算，6位小数精度，科学计算友好</p>
+    <code>3.14159 2 * → 6.283180</code>
+  </div>
+</div>
+<h2>📖 详细使用指南</h2>
+<h3>操作符参考表</h3>
+<table class="operation-table">
+  <thead>
+    <tr>
+      <th>操作符</th>
+      <th>描述</th>
+      <th>语法</th>
+      <th>示例</th>
+      <th>结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>+</code></td>
+      <td>加法运算</td>
+      <td><code>a b +</code></td>
+      <td><code>5 3 +</code></td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <td><code>-</code></td>
+      <td>减法运算</td>
+      <td><code>a b -</code></td>
+      <td><code>10 4 -</code></td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td>乘法运算</td>
+      <td><code>a b *</code></td>
+      <td><code>6 7 *</code></td>
+      <td>42.0</td>
+    </tr>
+    <tr>
+      <td><code>/</code></td>
+      <td>除法运算</td>
+      <td><code>a b /</code></td>
+      <td><code>15 3 /</code></td>
+      <td>5.0</td>
+    </tr>
+  </tbody>
+</table>
+<h3>交互式会话示例</h3>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> exampleSession = <span class="hljs-string">&quot;&quot;&quot;
+==================================
+      C++ RPN 计算器
+==================================
+支持操作: +, -, *, /
+示例: 输入 '5 5 +' 得到 10
+命令: 'q'退出, 'c'清空栈, 's'显示栈
+==================================
+&gt; 5 3 +
+结果: 8.000000
+&gt; 2 3 * 4 +
+结果: 10.000000
+&gt; 20 4 / 3 *
+结果: 15.000000
+&gt; s
+当前栈: 空
+&gt; c
+栈已清空
+&gt; q
+再见！
+&quot;&quot;&quot;</span>
+<span class="hljs-keyword">echo</span> exampleSession</code></pre><pre class="nb-output">==================================
+      C++ RPN 计算器
+==================================
+支持操作: +, -, *, /
+示例: 输入 '5 5 +' 得到 10
+命令: 'q'退出, 'c'清空栈, 's'显示栈
+==================================
+&gt; 5 3 +
+结果: 8.000000
+&gt; 2 3 * 4 +
+结果: 10.000000
+&gt; 20 4 / 3 *
+结果: 15.000000
+&gt; s
+当前栈: 空
+&gt; c
+栈已清空
+&gt; q
+再见！</pre>
+<h2>🚨 错误处理</h2>
+<div class="error">
+<strong>❌ 除零错误</strong><br>
+输入: <code>10 0 /</code><br>
+输出: <code>错误: 除零错误</code><br>
+<small>系统会自动清空栈并等待新的输入</small>
+</div>
+<div class="warning">
+<strong>⚠️ 输入格式错误</strong><br>
+输入: <code>abc</code><br>
+输出: <code>错误: 输入格式错误: abc</code><br>
+<small>请确保输入有效的数字或操作符</small>
+</div>
+<h2>🔧 高级功能</h2>
+<h3>批量计算模式</h3>
+<p>程序支持连续输入多个表达式，自动维护栈状态，适合复杂计算。</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> batchExample = <span class="hljs-string">&quot;&quot;&quot;
+&gt; 5 5 +
+结果: 10.000000
+&gt; 2 *
+结果: 20.000000
+&gt; 4 /
+结果: 5.000000
+&gt; 100 +
+结果: 105.000000
+&gt; s
+当前栈: 空
+&quot;&quot;&quot;</span>
+<span class="hljs-keyword">echo</span> batchExample</code></pre><pre class="nb-output">&gt; 5 5 +
+结果: 10.000000
+&gt; 2 *
+结果: 20.000000
+&gt; 4 /
+结果: 5.000000
+&gt; 100 +
+结果: 105.000000
+&gt; s
+当前栈: 空</pre>
+<h2>📚 API参考</h2>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;// RPNCalculator 类定义&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;class RPNCalculator {&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;private:&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    std::stack&lt;double&gt; stack;  // 内部栈存储&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;public:&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    // 栈操作&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    void push(double value);           // 压入数值&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    double pop();                      // 弹出数值&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    &quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    // 计算功能&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    void calculate(const std::string&amp; operation);  // 执行计算&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    &quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    // 工具函数&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    void clear();                      // 清空栈&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    void displayStack() const;         // 显示栈内容&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    bool empty() const;                // 检查栈是否为空&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    size_t size() const;               // 获取栈大小&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;};&quot;</span></code></pre><pre class="nb-output">// RPNCalculator 类定义
+class RPNCalculator {
+private:
+    std::stack&lt;double&gt; stack;  // 内部栈存储
+
+public:
+    // 栈操作
+    void push(double value);           // 压入数值
+    double pop();                      // 弹出数值
+    
+    // 计算功能
+    void calculate(const std::string&amp; operation);  // 执行计算
+    
+    // 工具函数
+    void clear();                      // 清空栈
+    void displayStack() const;         // 显示栈内容
+    bool empty() const;                // 检查栈是否为空
+    size_t size() const;               // 获取栈大小
+};</pre>
+<h2>🎯 综合示例集合</h2>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> complexExamples = [
+  <span class="hljs-string">&quot;表达式: '3 4 2 * 1 5 - 2 3 ^ ^ / +' → 复杂数学表达式&quot;</span>,
+  <span class="hljs-string">&quot;表达式: '1 2 + 4 * 5 + 3 -' → ((1+2)×4+5)-3 = 14&quot;</span>,
+  <span class="hljs-string">&quot;表达式: '15 7 1 1 + - / 3 * 2 1 1 + + -' → 复杂嵌套运算&quot;</span>
+]
+
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;📋 高级表达式示例:&quot;</span>
+<span class="hljs-keyword">for</span> i, example <span class="hljs-keyword">in</span> complexExamples:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{i+1:2d}. {example}&quot;</span></code></pre><pre class="nb-output">📋 高级表达式示例:
+ 1. 表达式: '3 4 2 * 1 5 - 2 3 ^ ^ / +' → 复杂数学表达式
+ 2. 表达式: '1 2 + 4 * 5 + 3 -' → ((1+2)×4+5)-3 = 14
+ 3. 表达式: '15 7 1 1 + - / 3 * 2 1 1 + + -' → 复杂嵌套运算</pre>
+<h2>📄 许可证和贡献</h2>
+<p>本项目采用 <strong>MIT 许可证</strong>。欢迎提交 Issue 和 Pull Request 来改进这个项目。</p>
+<hr />
+<div align="center">
+  <p><em>📅 最后更新: {$getDate()}</em></p>
+  <p>
+    <span class="badge badge-primary">C++</span>
+    <span class="badge badge-success">Nimib</span>
+    <span class="badge badge-warning">文档生成</span>
+  </p>
+  <p>✨ <strong>让计算更简单，让编程更愉快！</strong> ✨</p>
+</div>
+</div>
+</main>
+<footer>
+<div class="nb-box">
+  <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
+  <span></span>
+  <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
+</div>
+</footer>
+<section id="source">
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> nimib
+<span class="hljs-keyword">import</span> strformat
+<span class="hljs-keyword">import</span> strutils
+<span class="hljs-keyword">import</span> times
+
+<span class="hljs-comment"># 初始化文档</span>
+nbInit
+
+<span class="hljs-comment"># 使用nbText来添加CSS样式（兼容旧版本）</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;style&gt;
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.content-wrapper {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.code-block {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border-left: 6px solid var(--secondary-color);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.warning {
+  background: #fff3cd;
+  border: 1px solid #f39c12;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 6px solid #f39c12;
+}
+
+.success {
+  background: #d1f2eb;
+  border: 1px solid #27ae60;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 6px solid #27ae60;
+}
+
+.error {
+  background: #fadbd8;
+  border: 1px solid #e74c3c;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 6px solid #e74c3c;
+}
+
+.operation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.operation-table th, .operation-table td {
+  border: 1px solid #ddd;
+  padding: 15px;
+  text-align: left;
+}
+
+.operation-table th {
+  background: var(--primary-color);
+  color: white;
+  font-weight: 600;
+}
+
+.operation-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.operation-table tr:hover {
+  background-color: #e3f2fd;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.4em 0.8em;
+  font-size: 0.75em;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 20px;
+  margin: 0 0.3rem;
+}
+
+.badge-primary { 
+  background: var(--primary-color);
+  color: white; 
+}
+
+.badge-success { 
+  background: var(--success-color);
+  color: white; 
+}
+
+.badge-warning { 
+  background: var(--warning-color);
+  color: white; 
+}
+
+.badge-error { 
+  background: var(--accent-color);
+  color: white; 
+}
+
+.toc {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 6px solid var(--primary-color);
+}
+
+.toc ul {
+  list-style: none;
+  padding: 0;
+}
+
+.toc li {
+  margin: 0.5rem 0;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.toc a {
+  text-decoration: none;
+  color: var(--primary-color);
+  transition: color 0.2s;
+}
+
+.toc a:hover {
+  color: var(--secondary-color);
+}
+
+h1, h2, h3, h4 {
+  color: var(--primary-color);
+  margin-top: 2rem;
+}
+
+h1 {
+  border-bottom: 3px solid var(--secondary-color);
+  padding-bottom: 0.5rem;
+}
+&lt;/style&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 文档标题和头部</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;div class=&quot;content-wrapper&quot;&gt;
+&lt;div class=&quot;header&quot;&gt;
+  &lt;h1 style=&quot;color: white; border: none;&quot;&gt;🧮 RPN计算器 - 专业使用手册&lt;/h1&gt;
+  &lt;p style=&quot;font-size: 1.2em; opacity: 0.9;&quot;&gt;基于C++实现的逆波兰表示法计算器&lt;/p&gt;
+  &lt;div style=&quot;margin-top: 1rem;&quot;&gt;
+    &lt;span class=&quot;badge badge-primary&quot;&gt;版本 2.1&lt;/span&gt;
+    &lt;span class=&quot;badge badge-success&quot;&gt;稳定版&lt;/span&gt;
+    &lt;span class=&quot;badge badge-warning&quot;&gt;C++17&lt;/span&gt;
+    &lt;span class=&quot;badge badge-error&quot;&gt;高性能&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 目录</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;div class=&quot;toc&quot;&gt;
+&lt;h2&gt;📑 目录&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#项目简介&quot;&gt;项目简介&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#快速开始&quot;&gt;快速开始&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#功能特性&quot;&gt;功能特性&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#详细使用指南&quot;&gt;详细使用指南&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#错误处理&quot;&gt;错误处理&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#高级功能&quot;&gt;高级功能&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#api参考&quot;&gt;API参考&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#示例集合&quot;&gt;示例集合&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 项目简介</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## 🚀 项目简介
+
+RPN（逆波兰表示法）是一种数学表达式表示法，其中操作符位于操作数之后。
+这种表示法无需括号即可明确运算顺序，被广泛用于计算器和编程语言中。
+
+**核心优势：**
+- 🎯 **无歧义性** - 无需括号，运算顺序明确
+- ⚡ **高效计算** - 适合栈机实现，计算效率高
+- 🔧 **易于扩展** - 模块化设计，支持新操作符
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 快速开始部分</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## ⚡ 快速开始
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">let</span> compileCommand = <span class="hljs-string">&quot;g++ -std=c++17 -Wall -Wextra -O2 -o rpn_calc rpn_calc.cpp&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;💻 编译命令: {compileCommand}&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;div class=&quot;success&quot;&gt;
+💡 &lt;strong&gt;编译提示:&lt;/strong&gt; 
+- 使用 &lt;code&gt;-O2&lt;/code&gt; 优化标志可以获得更好的性能
+- 使用 &lt;code&gt;-g&lt;/code&gt; 标志包含调试信息
+&lt;/div&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 功能特性网格</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## ✨ 功能特性
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;div class=&quot;feature-grid&quot;&gt;
+  &lt;div class=&quot;feature-card&quot;&gt;
+    &lt;h3&gt;🔢 基本运算&lt;/h3&gt;
+    &lt;p&gt;支持加、减、乘、除四则运算，处理整数和浮点数&lt;/p&gt;
+    &lt;code&gt;5 3 + → 8.0&lt;/code&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;feature-card&quot;&gt;
+    &lt;h3&gt;📊 栈管理&lt;/h3&gt;
+    &lt;p&gt;实时栈状态查看、清空操作，支持连续计算&lt;/p&gt;
+    &lt;code&gt;命令: s (显示栈), c (清空栈)&lt;/code&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;feature-card&quot;&gt;
+    &lt;h3&gt;🛡️ 错误处理&lt;/h3&gt;
+    &lt;p&gt;完善的异常处理：除零、栈空、格式错误&lt;/p&gt;
+    &lt;code&gt;10 0 / → 除零错误&lt;/code&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;feature-card&quot;&gt;
+    &lt;h3&gt;🎯 高精度&lt;/h3&gt;
+    &lt;p&gt;支持浮点数运算，6位小数精度，科学计算友好&lt;/p&gt;
+    &lt;code&gt;3.14159 2 * → 6.283180&lt;/code&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 详细使用指南</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## 📖 详细使用指南
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+### 操作符参考表
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;table class=&quot;operation-table&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作符&lt;/th&gt;
+      &lt;th&gt;描述&lt;/th&gt;
+      &lt;th&gt;语法&lt;/th&gt;
+      &lt;th&gt;示例&lt;/th&gt;
+      &lt;th&gt;结果&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code&gt;+&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;加法运算&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;a b +&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;5 3 +&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;8.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code&gt;-&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;减法运算&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;a b -&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;10 4 -&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;6.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code&gt;*&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;乘法运算&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;a b *&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;6 7 *&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;42.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code&gt;/&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;除法运算&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;a b /&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;15 3 /&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;5.0&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 交互式示例</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+### 交互式会话示例
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">let</span> exampleSession = <span class="hljs-string">&quot;&quot;&quot;
+==================================
+      C++ RPN 计算器
+==================================
+支持操作: +, -, *, /
+示例: 输入 '5 5 +' 得到 10
+命令: 'q'退出, 'c'清空栈, 's'显示栈
+==================================
+&gt; 5 3 +
+结果: 8.000000
+&gt; 2 3 * 4 +
+结果: 10.000000
+&gt; 20 4 / 3 *
+结果: 15.000000
+&gt; s
+当前栈: 空
+&gt; c
+栈已清空
+&gt; q
+再见！
+&quot;&quot;&quot;</span>
+  <span class="hljs-keyword">echo</span> exampleSession
+
+<span class="hljs-comment"># 错误处理部分</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## 🚨 错误处理
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;div class=&quot;error&quot;&gt;
+&lt;strong&gt;❌ 除零错误&lt;/strong&gt;&lt;br&gt;
+输入: &lt;code&gt;10 0 /&lt;/code&gt;&lt;br&gt;
+输出: &lt;code&gt;错误: 除零错误&lt;/code&gt;&lt;br&gt;
+&lt;small&gt;系统会自动清空栈并等待新的输入&lt;/small&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;warning&quot;&gt;
+&lt;strong&gt;⚠️ 输入格式错误&lt;/strong&gt;&lt;br&gt;
+输入: &lt;code&gt;abc&lt;/code&gt;&lt;br&gt;
+输出: &lt;code&gt;错误: 输入格式错误: abc&lt;/code&gt;&lt;br&gt;
+&lt;small&gt;请确保输入有效的数字或操作符&lt;/small&gt;
+&lt;/div&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 高级功能</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## 🔧 高级功能
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+### 批量计算模式
+程序支持连续输入多个表达式，自动维护栈状态，适合复杂计算。
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">let</span> batchExample = <span class="hljs-string">&quot;&quot;&quot;
+&gt; 5 5 +
+结果: 10.000000
+&gt; 2 *
+结果: 20.000000
+&gt; 4 /
+结果: 5.000000
+&gt; 100 +
+结果: 105.000000
+&gt; s
+当前栈: 空
+&quot;&quot;&quot;</span>
+  <span class="hljs-keyword">echo</span> batchExample
+
+<span class="hljs-comment"># API参考</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## 📚 API参考
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;// RPNCalculator 类定义&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;class RPNCalculator {&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;private:&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    std::stack&lt;double&gt; stack;  // 内部栈存储&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;public:&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    // 栈操作&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    void push(double value);           // 压入数值&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    double pop();                      // 弹出数值&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    &quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    // 计算功能&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    void calculate(const std::string&amp; operation);  // 执行计算&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    &quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    // 工具函数&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    void clear();                      // 清空栈&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    void displayStack() const;         // 显示栈内容&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    bool empty() const;                // 检查栈是否为空&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;    size_t size() const;               // 获取栈大小&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;};&quot;</span>
+
+<span class="hljs-comment"># 综合示例集合</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## 🎯 综合示例集合
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">let</span> complexExamples = [
+    <span class="hljs-string">&quot;表达式: '3 4 2 * 1 5 - 2 3 ^ ^ / +' → 复杂数学表达式&quot;</span>,
+    <span class="hljs-string">&quot;表达式: '1 2 + 4 * 5 + 3 -' → ((1+2)×4+5)-3 = 14&quot;</span>,
+    <span class="hljs-string">&quot;表达式: '15 7 1 1 + - / 3 * 2 1 1 + + -' → 复杂嵌套运算&quot;</span>
+  ]
+  
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;📋 高级表达式示例:&quot;</span>
+  <span class="hljs-keyword">for</span> i, example <span class="hljs-keyword">in</span> complexExamples:
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{i+1:2d}. {example}&quot;</span>
+
+<span class="hljs-comment"># 结尾部分</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## 📄 许可证和贡献
+
+本项目采用 **MIT 许可证**。欢迎提交 Issue 和 Pull Request 来改进这个项目。
+
+---
+
+&lt;div align=&quot;center&quot;&gt;
+  &lt;p&gt;&lt;em&gt;📅 最后更新: {$getDate()}&lt;/em&gt;&lt;/p&gt;
+  &lt;p&gt;
+    &lt;span class=&quot;badge badge-primary&quot;&gt;C++&lt;/span&gt;
+    &lt;span class=&quot;badge badge-success&quot;&gt;Nimib&lt;/span&gt;
+    &lt;span class=&quot;badge badge-warning&quot;&gt;文档生成&lt;/span&gt;
+  &lt;/p&gt;
+  &lt;p&gt;✨ &lt;strong&gt;让计算更简单，让编程更愉快！&lt;/strong&gt; ✨&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 保存文档</span>
+nbSave
+
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;🎉 文档生成完成!&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;📁 文件位置: rpn_manual.html&quot;</span>
+</code></pre>
+</section><script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script></body>
+</html>
